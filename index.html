@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dfuscator v1.1 - Lua/Luau Obfuscator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .logo {
+            color: #00ffff;
+            font-size: 14px;
+            line-height: 1.4;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            white-space: pre;
+        }
+
+        .features {
+            color: #00ff88;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .features span {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 5px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(20, 20, 35, 0.9);
+            border: 1px solid rgba(100, 100, 150, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 136, 0.1));
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(100, 100, 150, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            color: #00ffff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .panel-info {
+            color: #888;
+            font-size: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            background: rgba(10, 10, 20, 0.8);
+            border: none;
+            color: #00ff88;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: #555;
+        }
+
+        textarea:focus {
+            background: rgba(15, 15, 25, 0.9);
+        }
+
+        #output {
+            color: #ffaa00;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffff, #00aa88);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(100, 100, 150, 0.3);
+            color: #aaa;
+            border: 1px solid rgba(100, 100, 150, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100, 100, 150, 0.5);
+            color: #fff;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #ff8800, #ff5500);
+            color: #000;
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.4);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(30, 30, 50, 0.8);
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid rgba(100, 100, 150, 0.3);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #00ffff;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 255, 255, 0.1);
+            border-top-color: #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 255, 136, 0.9);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #555;
+            font-size: 12px;
+        }
+
+        .footer a {
+            color: #00ffff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <pre class="logo">
+  ____   __                       _             
+ |  _ \ / _|_   _ ___  ___ __ _| |_ ___  _ __ 
+ | | | | |_| | | / __|/ __/ _` | __/ _ \| '__|
+ | |_| |  _| |_| \__ \ (_| (_| | || (_) | |   
+ |____/|_|  \__,_|___/\___\__,_|\__\___/|_| v1.1
+            </pre>
+            <div class="features">
+                <span>🔐 Triple XOR</span>
+                <span>🔀 Micro Chunks</span>
+                <span>🧮 Deep Math (4-7 levels)</span>
+                <span>🎭 Fake Logic</span>
+                <span>📦 2 Layers Auto</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">📝 INPUT CODE</span>
+                    <span class="panel-info" id="inputInfo">0 chars</span>
+                </div>
+                <textarea id="input" placeholder="-- Вставьте ваш Lua/Luau код здесь...
+
+print('Hello, World!')
+
+local function example()
+    return 42
+end"></textarea>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">🔒 OBFUSCATED OUTPUT</span>
+                    <span class="panel-info" id="outputInfo">0 chars</span>
+                </div>
+                <textarea id="output" readonly placeholder="Обфусцированный код появится здесь..."></textarea>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="obfuscateBtn" onclick="obfuscate()">
+                🚀 Обфусцировать
+            </button>
+            <button class="btn btn-copy" onclick="copyOutput()">
+                📋 Копировать
+            </button>
+            <button class="btn btn-secondary" onclick="clearAll()">
+                🗑️ Очистить
+            </button>
+            <button class="btn btn-secondary" onclick="loadExample()">
+                📄 Пример
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Обфускация... (2 слоя)</div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat">
+                <div class="stat-value" id="statOriginal">0</div>
+                <div class="stat-label">Исходный размер</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statObfuscated">0</div>
+                <div class="stat-label">После обфускации</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statRatio">0x</div>
+                <div class="stat-label">Увеличение</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statChunks">0</div>
+                <div class="stat-label">Фрагментов</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Dfuscator v1.1 | Lua/Luau Obfuscator | 
+            Triple XOR + Base64 + Control Flow Flattening
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Скопировано!</div>
+
+    <script>
+        // ==================== DFUSCATOR ENGINE ====================
+        
+        const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        
+        function base64Encode(data) {
+            let binary = '';
+            for (let i = 0; i < data.length; i++) {
+                binary += data.charCodeAt(i).toString(2).padStart(8, '0');
+            }
+            binary += '0000';
+            
+            let result = '';
+            for (let i = 0; i + 6 <= binary.length; i += 6) {
+                const chunk = binary.substr(i, 6);
+                if (chunk.length < 6) break;
+                const index = parseInt(chunk, 2);
+                result += b64[index];
+            }
+            
+            const padding = data.length % 3;
+            if (padding === 1) result += '==';
+            else if (padding === 2) result += '=';
+            
+            return result;
+        }
+        
+        function tripleXor(data, key1, key2, key3) {
+            let t1 = [];
+            for (let i = 0; i < data.length; i++) {
+                const kb = key1.charCodeAt(i % key1.length);
+                t1.push((data.charCodeAt(i) + kb) % 256);
+            }
+            
+            let t2 = [];
+            for (let i = 0; i < t1.length; i++) {
+                const kb = key2.charCodeAt(i % key2.length);
+                t2.push((t1[i] + kb) % 256);
+            }
+            
+            let result = '';
+            for (let i = 0; i < t2.length; i++) {
+                const kb = key3.charCodeAt(i % key3.length);
+                result += String.fromCharCode((t2[i] + kb) % 256);
+            }
+            
+            return result;
+        }
+        
+        function genKey(len) {
+            let result = '';
+            for (let i = 0; i < len; i++) {
+                result += String.fromCharCode(Math.floor(Math.random() * 255) + 1);
+            }
+            return result;
+        }
+        
+        function randVar(len = null) {
+            len = len || Math.floor(Math.random() * 13) + 16;
+            const confuse = ["I", "l", "1", "O", "0", "o", "_", "Il", "lI", "O0", "0O", "l1", "1l", "oO", "Oo"];
+            let result = "_" + confuse[Math.floor(Math.random() * 7)];
+            for (let i = 2; i < len; i++) {
+                result += confuse[Math.floor(Math.random() * confuse.length)];
+            }
+            return result + "_" + Math.floor(Math.random() * 90000 + 10000) + "_" + Math.floor(Math.random() * 900 + 100);
+        }
+        
+        function obfNumber(n) {
+            const depth = Math.floor(Math.random() * 4) + 4;
+            
+            function gen(val, d) {
+                if (d <= 0) return val.toString();
+                const a = Math.floor(Math.random() * 99899) + 100;
+                const b = Math.floor(Math.random() * 49) + 2;
+                const x = Math.floor(Math.random() * 1000) + 1;
+                const y = Math.floor(Math.random() * 100) + 1;
+                
+                const ops = [
+                    () => `((${gen(val + a, d-1)})-${a})`,
+                    () => `((${gen(val - a, d-1)})+${a})`,
+                    () => `(((${gen(val, d-1)})*${b})/${b})`,
+                    () => `((${gen(val, d-1)})+${x}-${x})`,
+                    () => `((${gen(val, d-1)})*1)`,
+                    () => `((${gen(val, d-1)})+${x}+${y}-${x}-${y})`,
+                ];
+                
+                return ops[Math.floor(Math.random() * ops.length)]();
+            }
+            
+            return gen(n, depth);
+        }
+        
+        function junk() {
+            const vars = [];
+            for (let i = 0; i < Math.floor(Math.random() * 4) + 3; i++) {
+                vars.push(randVar(8));
+            }
+            
+            const templates = [
+                `local ${vars[0]}=nil;`,
+                `local ${vars[0]}=${obfNumber(Math.floor(Math.random() * 99899) + 100)};`,
+                `if(function()return false end)()then local ${vars[0]}=nil end;`,
+                `do local ${vars[0]}=${obfNumber(0)};${vars[0]}=nil end;`,
+                '',
+            ];
+            
+            let result = '';
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 2; i++) {
+                result += templates[Math.floor(Math.random() * templates.length)];
+            }
+            return result;
+        }
+        
+        function fakeLogic() {
+            const funcs = [];
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 4; i++) {
+                const name = randVar(12);
+                const p1 = randVar(5);
+                const p2 = randVar(5);
+                const inner = randVar(6);
+                
+                const patterns = [
+                    `local ${name}=function(${p1},${p2})local ${inner}=${obfNumber(Math.floor(Math.random() * 1000) + 1)};if ${p1} then return ${p2} else return ${inner} end end;`,
+                    `local ${name};${name}=function(${p1})if ${p1} then return ${name}(${p1}-${obfNumber(1)})else return ${obfNumber(0)} end end;`,
+                ];
+                
+                funcs.push(patterns[Math.floor(Math.random() * patterns.length)]);
+            }
+            return funcs.join('\n');
+        }
+        
+        function fakeData() {
+            const fakeStrings = [];
+            for (let i = 0; i < Math.floor(Math.random() * 6) + 5; i++) {
+                const len = Math.floor(Math.random() * 31) + 20;
+                let s = '';
+                for (let j = 0; j < len; j++) {
+                    s += String.fromCharCode(Math.floor(Math.random() * 58) + 65);
+                }
+                fakeStrings.push(base64Encode(s));
+            }
+            
+            const fakeTable = randVar(10);
+            let result = `local ${fakeTable}={`;
+            for (let i = 0; i < Math.floor(Math.random() * 4) + 3; i++) {
+                const str = fakeStrings[Math.floor(Math.random() * fakeStrings.length)];
+                result += `[${obfNumber(i + 1)}]="${str}",`;
+            }
+            result += '};';
+            return result;
+        }
+        
+        function shuffleChunks(chunks) {
+            const n = chunks.length;
+            const order = [];
+            for (let i = 0; i < n; i++) order.push(i);
+            
+            for (let i = n - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [order[i], order[j]] = [order[j], order[i]];
+            }
+            
+            const shuffled = [];
+            const reverse = [];
+            for (let newPos = 0; newPos < n; newPos++) {
+                const origPos = order[newPos];
+                shuffled[newPos] = chunks[origPos];
+                reverse[origPos] = newPos + 1;
+            }
+            
+            return { shuffled, reverse };
+        }
+        
+        function splitMicro(str) {
+            const chunks = [];
+            let pos = 0;
+            while (pos < str.length) {
+                const size = Math.floor(Math.random() * 18) + 8;
+                chunks.push(str.substr(pos, size));
+                pos += size;
+            }
+            return chunks;
+        }
+        
+        let totalChunks = 0;
+        
+        function obfuscateCode(code) {
+            const xorKey1 = genKey(Math.floor(Math.random() * 17) + 24);
+            const xorKey2 = genKey(Math.floor(Math.random() * 13) + 20);
+            const xorKey3 = genKey(Math.floor(Math.random() * 13) + 16);
+            
+            const encrypted = tripleXor(code, xorKey1, xorKey2, xorKey3);
+            const encoded = base64Encode(encrypted);
+            const chunks = splitMicro(encoded);
+            const { shuffled, reverse } = shuffleChunks(chunks);
+            
+            totalChunks += chunks.length;
+            
+            const V = [];
+            for (let i = 0; i < 80; i++) V.push(randVar());
+            
+            let chunkArr = '{';
+            shuffled.forEach((chunk, i) => {
+                chunkArr += `[${obfNumber(i + 1)}]="${chunk}"`;
+                if (i < shuffled.length - 1) chunkArr += ',';
+            });
+            chunkArr += '}';
+            
+            let orderArr = '{';
+            reverse.forEach((val, i) => {
+                orderArr += `[${obfNumber(i + 1)}]=${obfNumber(val)}`;
+                if (i < reverse.length - 1) orderArr += ',';
+            });
+            orderArr += '}';
+            
+            function keyToArr(key) {
+                let arr = '{';
+                for (let i = 0; i < key.length; i++) {
+                    arr += obfNumber(key.charCodeAt(i));
+                    if (i < key.length - 1) arr += ',';
+                }
+                return arr + '}';
+            }
+            
+            const keyArr1 = keyToArr(xorKey1);
+            const keyArr2 = keyToArr(xorKey2);
+            const keyArr3 = keyToArr(xorKey3);
+            
+            let b64Table = '{';
+            for (let i = 0; i < 64; i++) {
+                b64Table += `["${b64[i]}"]=${obfNumber(i)}`;
+                if (i < 63) b64Table += ',';
+            }
+            b64Table += '}';
+            
+            const s1 = 11, s2 = 22, s3 = 33, s4 = 44, s5 = 55;
+            
+            return `return(function(...)
+${fakeLogic()}
+${fakeData()}
+${junk()}
+local ${V[0]}=${chunkArr}
+local ${V[1]}=${orderArr}
+local ${V[2]}=${keyArr1}
+local ${V[3]}=${keyArr2}
+local ${V[4]}=${keyArr3}
+local ${V[5]}=${b64Table}
+${junk()}
+local ${V[9]}
+local ${V[10]}
+local ${V[11]}
+local ${V[12]}
+local ${V[13]}
+local ${V[69]}=${obfNumber(s1)}
+while true do
+if ${V[69]}==${obfNumber(s1)} then
+${V[9]}=function()
+local ${V[14]}=""
+local ${V[15]}=1
+local ${V[16]}=#${V[1]}
+while ${V[15]}<=${V[16]} do
+local ${V[17]}=${V[1]}[${V[15]}]
+if ${V[17]} then ${V[14]}=${V[14]}..${V[0]}[${V[17]}] end
+${V[15]}=${V[15]}+1
+end
+return ${V[14]}
+end
+${V[69]}=${obfNumber(s2)}
+elseif ${V[69]}==${obfNumber(s2)} then
+${V[10]}=function(${V[18]})
+local ${V[19]}=""
+local ${V[20]}=0
+local ${V[21]}=0
+local ${V[22]}=1
+local ${V[23]}=#${V[18]}
+while ${V[22]}<=${V[23]} do
+local ${V[24]}=string.sub(${V[18]},${V[22]},${V[22]})
+if ${V[24]}=="=" then
+if ${V[21]}==2 then ${V[19]}=${V[19]}..string.char(math.floor(${V[20]}/16))
+elseif ${V[21]}==3 then ${V[19]}=${V[19]}..string.char(math.floor(${V[20]}/1024),math.floor((${V[20]}%1024)/4))
+end
+break
+end
+local ${V[25]}=${V[5]}[${V[24]}]
+if ${V[25]} then
+${V[20]}=${V[20]}*64+${V[25]}
+${V[21]}=${V[21]}+1
+if ${V[21]}==4 then
+${V[19]}=${V[19]}..string.char(math.floor(${V[20]}/65536),math.floor(${V[20]}/256)%256,${V[20]}%256)
+${V[20]}=0
+${V[21]}=0
+end
+end
+${V[22]}=${V[22]}+1
+end
+return ${V[19]}
+end
+${V[69]}=${obfNumber(s3)}
+elseif ${V[69]}==${obfNumber(s3)} then
+${V[11]}=function(${V[26]},${V[27]})
+local ${V[28]}=""
+local ${V[29]}=#${V[27]}
+local ${V[30]}=1
+while ${V[30]}<=#${V[26]} do
+local ${V[31]}=string.byte(${V[26]},${V[30]})
+local ${V[32]}=${V[27]}[((${V[30]}-1)%${V[29]})+1]
+${V[28]}=${V[28]}..string.char((256+${V[31]}-${V[32]})%256)
+${V[30]}=${V[30]}+1
+end
+return ${V[28]}
+end
+${V[69]}=${obfNumber(s4)}
+elseif ${V[69]}==${obfNumber(s4)} then
+${V[12]}=${V[9]}()
+${V[13]}=${V[10]}(${V[12]})
+local ${V[39]}=${V[11]}(${V[13]},${V[2]})
+local ${V[40]}=${V[11]}(${V[39]},${V[3]})
+local ${V[41]}=${V[11]}(${V[40]},${V[4]})
+${V[69]}=${obfNumber(s5)}
+elseif ${V[69]}==${obfNumber(s5)} then
+break
+else
+${V[69]}=${obfNumber(s1)}
+end
+end
+${junk()}
+local ${V[41]}=${V[11]}(${V[11]}(${V[11]}(${V[10]}(${V[9]}()),${V[2]}),${V[3]}),${V[4]})
+return(loadstring or load)(${V[41]})(...)
+end)(...)`;
+        }
+        
+        function runObfuscation(code) {
+            totalChunks = 0;
+            let result = code;
+            for (let i = 0; i < 2; i++) {
+                result = obfuscateCode(result);
+            }
+            return { result, chunks: totalChunks };
+        }
+        
+        // ==================== UI FUNCTIONS ====================
+        
+        const inputEl = document.getElementById('input');
+        const outputEl = document.getElementById('output');
+        const inputInfo = document.getElementById('inputInfo');
+        const outputInfo = document.getElementById('outputInfo');
+        const loading = document.getElementById('loading');
+        const stats = document.getElementById('stats');
+        const toast = document.getElementById('toast');
+        
+        inputEl.addEventListener('input', () => {
+            inputInfo.textContent = `${inputEl.value.length} chars`;
+        });
+        
+        function obfuscate() {
+            const code = inputEl.value.trim();
+            if (!code) {
+                showToast('Введите код!');
+                return;
+            }
+            
+            loading.classList.add('active');
+            stats.style.display = 'none';
+            outputEl.value = '';
+            
+            setTimeout(() => {
+                try {
+                    const { result, chunks } = runObfuscation(code);
+                    outputEl.value = result;
+                    outputInfo.textContent = `${result.length} chars`;
+                    
+                    document.getElementById('statOriginal').textContent = formatSize(code.length);
+                    document.getElementById('statObfuscated').textContent = formatSize(result.length);
+                    document.getElementById('statRatio').textContent = (result.length / code.length).toFixed(1) + 'x';
+                    document.getElementById('statChunks').textContent = chunks;
+                    
+                    stats.style.display = 'flex';
+                    showToast('Готово!');
+                } catch (e) {
+                    outputEl.value = 'Error: ' + e.message;
+                    showToast('Ошибка!');
+                }
+                loading.classList.remove('active');
+            }, 100);
+        }
+        
+        function copyOutput() {
+            if (!outputEl.value) {
+                showToast('Нечего копировать!');
+                return;
+            }
+            navigator.clipboard.writeText(outputEl.value);
+            showToast('Скопировано!');
+        }
+        
+        function clearAll() {
+            inputEl.value = '';
+            outputEl.value = '';
+            inputInfo.textContent = '0 chars';
+            outputInfo.textContent = '0 chars';
+            stats.style.display = 'none';
+        }
+        
+        function loadExample() {
+            inputEl.value = `-- Example Lua Script
+local function greet(name)
+    print("Hello, " .. name .. "!")
+end
+
+local function calculate(a, b)
+    return a * b + 42
+end
+
+greet("World")
+local result = calculate(10, 5)
+print("Result:", result)`;
+            inputInfo.textContent = `${inputEl.value.length} chars`;
+        }
+        
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            return (bytes / 1024).toFixed(1) + ' KB';
+        }
+        
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>
