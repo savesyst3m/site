@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dfuscator v1.1 - Lua/Luau Obfuscator</title>
+    <title>Dfuscator - Lua Obfuscator</title>
     <style>
         * {
             margin: 0;
@@ -12,234 +12,208 @@
         }
 
         body {
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #1a1a2e;
+            color: #ffffff;
             min-height: 100vh;
-            color: #e0e0e0;
-            padding: 20px;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
+        /* Header */
         .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 10px;
         }
 
-        .logo {
-            color: #00ffff;
-            font-size: 14px;
-            line-height: 1.4;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-            white-space: pre;
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .features {
-            color: #00ff88;
-            margin-top: 15px;
-            font-size: 13px;
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
         }
 
-        .features span {
-            display: inline-block;
-            margin: 5px 10px;
-            padding: 5px 12px;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 15px;
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
         }
 
-        .main-content {
+        /* Editor Section */
+        .editor-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 900px) {
-            .main-content {
+        @media (max-width: 768px) {
+            .editor-section {
                 grid-template-columns: 1fr;
             }
         }
 
-        .panel {
-            background: rgba(20, 20, 35, 0.9);
-            border: 1px solid rgba(100, 100, 150, 0.3);
-            border-radius: 10px;
+        .editor-box {
+            background: #16213e;
+            border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #0f3460;
         }
 
-        .panel-header {
-            background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 136, 0.1));
-            padding: 12px 20px;
-            border-bottom: 1px solid rgba(100, 100, 150, 0.3);
+        .editor-header {
+            background: #0f3460;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #a0a0a0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .panel-title {
-            color: #00ffff;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .panel-info {
-            color: #888;
-            font-size: 12px;
+        .editor-header span {
+            color: #667eea;
         }
 
         textarea {
             width: 100%;
-            height: 400px;
-            background: rgba(10, 10, 20, 0.8);
+            height: 350px;
+            background: #16213e;
             border: none;
-            color: #00ff88;
-            padding: 15px;
-            font-family: 'Consolas', 'Monaco', monospace;
+            color: #e0e0e0;
+            padding: 16px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 13px;
             resize: vertical;
             outline: none;
+            line-height: 1.5;
         }
 
         textarea::placeholder {
-            color: #555;
+            color: #4a4a6a;
         }
 
         textarea:focus {
-            background: rgba(15, 15, 25, 0.9);
+            background: #1a2744;
         }
 
         #output {
-            color: #ffaa00;
+            color: #98d9a8;
         }
 
-        .controls {
+        /* Buttons */
+        .button-section {
             display: flex;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
+            gap: 12px;
             justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
         }
 
         .btn {
-            padding: 12px 30px;
+            padding: 12px 28px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-family: inherit;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #00ffff, #00aa88);
-            color: #000;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
-            background: rgba(100, 100, 150, 0.3);
-            color: #aaa;
-            border: 1px solid rgba(100, 100, 150, 0.5);
+            background: #0f3460;
+            color: #a0a0a0;
         }
 
         .btn-secondary:hover {
-            background: rgba(100, 100, 150, 0.5);
-            color: #fff;
+            background: #1a4a7a;
+            color: #ffffff;
         }
 
-        .btn-copy {
-            background: linear-gradient(135deg, #ff8800, #ff5500);
-            color: #000;
+        .btn-success {
+            background: #27ae60;
+            color: white;
         }
 
-        .btn-copy:hover {
-            box-shadow: 0 0 20px rgba(255, 136, 0, 0.4);
+        .btn-success:hover {
+            background: #2ecc71;
         }
 
-        .stats {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 20px 0;
-            flex-wrap: wrap;
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
-        .stat {
-            background: rgba(30, 30, 50, 0.8);
-            padding: 15px 25px;
+        /* Info Cards */
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: #16213e;
+            border: 1px solid #0f3460;
             border-radius: 8px;
-            border: 1px solid rgba(100, 100, 150, 0.3);
+            padding: 20px;
             text-align: center;
         }
 
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #00ffff;
+        .info-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
         }
 
-        .stat-label {
-            font-size: 11px;
-            color: #888;
-            margin-top: 5px;
+        .info-card .label {
+            font-size: 12px;
+            color: #6a6a8a;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .loading {
-            display: none;
+        /* Footer */
+        .footer {
             text-align: center;
-            padding: 40px;
-            color: #00ffff;
+            padding: 30px 20px;
+            color: #4a4a6a;
+            font-size: 13px;
+            border-top: 1px solid #0f3460;
         }
 
-        .loading.active {
-            display: block;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(0, 255, 255, 0.1);
-            border-top-color: #00ffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(0, 255, 136, 0.9);
-            color: #000;
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-weight: bold;
-            transform: translateX(200%);
+            bottom: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transform: translateX(150%);
             transition: transform 0.3s ease;
             z-index: 1000;
         }
@@ -248,113 +222,122 @@
             transform: translateX(0);
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: #555;
-            font-size: 12px;
+        .toast.error {
+            background: #e74c3c;
         }
 
-        .footer a {
-            color: #00ffff;
-            text-decoration: none;
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 46, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #0f3460;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+            
+            textarea {
+                height: 250px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Dfuscator</h1>
+        <p>Powerful Lua/Luau code obfuscator</p>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <pre class="logo">
-  ____   __                       _             
- |  _ \ / _|_   _ ___  ___ __ _| |_ ___  _ __ 
- | | | | |_| | | / __|/ __/ _` | __/ _ \| '__|
- | |_| |  _| |_| \__ \ (_| (_| | || (_) | |   
- |____/|_|  \__,_|___/\___\__,_|\__\___/|_| v1.1
-            </pre>
-            <div class="features">
-                <span>🔐 Triple XOR</span>
-                <span>🔀 Micro Chunks</span>
-                <span>🧮 Deep Math (4-7 levels)</span>
-                <span>🎭 Fake Logic</span>
-                <span>📦 2 Layers Auto</span>
+        <div class="editor-section">
+            <div class="editor-box">
+                <div class="editor-header">
+                    Input
+                    <span id="inputCount">0 characters</span>
+                </div>
+                <textarea id="input" placeholder="Paste your Lua code here..."></textarea>
+            </div>
+
+            <div class="editor-box">
+                <div class="editor-header">
+                    Output
+                    <span id="outputCount">0 characters</span>
+                </div>
+                <textarea id="output" readonly placeholder="Obfuscated code will appear here..."></textarea>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="panel">
-                <div class="panel-header">
-                    <span class="panel-title">📝 INPUT CODE</span>
-                    <span class="panel-info" id="inputInfo">0 chars</span>
-                </div>
-                <textarea id="input" placeholder="-- Вставьте ваш Lua/Luau код здесь...
-
-print('Hello, World!')
-
-local function example()
-    return 42
-end"></textarea>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <span class="panel-title">🔒 OBFUSCATED OUTPUT</span>
-                    <span class="panel-info" id="outputInfo">0 chars</span>
-                </div>
-                <textarea id="output" readonly placeholder="Обфусцированный код появится здесь..."></textarea>
-            </div>
-        </div>
-
-        <div class="controls">
+        <div class="button-section">
             <button class="btn btn-primary" id="obfuscateBtn" onclick="obfuscate()">
-                🚀 Обфусцировать
+                Obfuscate
             </button>
-            <button class="btn btn-copy" onclick="copyOutput()">
-                📋 Копировать
+            <button class="btn btn-success" onclick="copyOutput()">
+                Copy
             </button>
             <button class="btn btn-secondary" onclick="clearAll()">
-                🗑️ Очистить
-            </button>
-            <button class="btn btn-secondary" onclick="loadExample()">
-                📄 Пример
+                Clear
             </button>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <div>Обфускация... (2 слоя)</div>
-        </div>
-
-        <div class="stats" id="stats" style="display: none;">
-            <div class="stat">
-                <div class="stat-value" id="statOriginal">0</div>
-                <div class="stat-label">Исходный размер</div>
+        <div class="info-section" id="stats" style="display: none;">
+            <div class="info-card">
+                <div class="value" id="statOriginal">0</div>
+                <div class="label">Original Size</div>
             </div>
-            <div class="stat">
-                <div class="stat-value" id="statObfuscated">0</div>
-                <div class="stat-label">После обфускации</div>
+            <div class="info-card">
+                <div class="value" id="statOutput">0</div>
+                <div class="label">Output Size</div>
             </div>
-            <div class="stat">
-                <div class="stat-value" id="statRatio">0x</div>
-                <div class="stat-label">Увеличение</div>
+            <div class="info-card">
+                <div class="value" id="statRatio">0x</div>
+                <div class="label">Size Increase</div>
             </div>
-            <div class="stat">
-                <div class="stat-value" id="statChunks">0</div>
-                <div class="stat-label">Фрагментов</div>
-            </div>
-        </div>
-
-        <div class="footer">
-            Dfuscator v1.1 | Lua/Luau Obfuscator | 
-            Triple XOR + Base64 + Control Flow Flattening
         </div>
     </div>
 
-    <div class="toast" id="toast">Скопировано!</div>
+    <div class="footer">
+        Dfuscator v1.1 — Lua/Luau Obfuscator
+    </div>
+
+    <div class="toast" id="toast"></div>
+    
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+    </div>
 
     <script>
-        // ==================== DFUSCATOR ENGINE ====================
-        
         const b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
         
         function base64Encode(data) {
@@ -363,423 +346,251 @@ end"></textarea>
                 binary += data.charCodeAt(i).toString(2).padStart(8, '0');
             }
             binary += '0000';
-            
             let result = '';
             for (let i = 0; i + 6 <= binary.length; i += 6) {
                 const chunk = binary.substr(i, 6);
                 if (chunk.length < 6) break;
-                const index = parseInt(chunk, 2);
-                result += b64[index];
+                result += b64[parseInt(chunk, 2)];
             }
-            
             const padding = data.length % 3;
             if (padding === 1) result += '==';
             else if (padding === 2) result += '=';
-            
             return result;
         }
         
         function tripleXor(data, key1, key2, key3) {
             let t1 = [];
             for (let i = 0; i < data.length; i++) {
-                const kb = key1.charCodeAt(i % key1.length);
-                t1.push((data.charCodeAt(i) + kb) % 256);
+                t1.push((data.charCodeAt(i) + key1.charCodeAt(i % key1.length)) % 256);
             }
-            
             let t2 = [];
             for (let i = 0; i < t1.length; i++) {
-                const kb = key2.charCodeAt(i % key2.length);
-                t2.push((t1[i] + kb) % 256);
+                t2.push((t1[i] + key2.charCodeAt(i % key2.length)) % 256);
             }
-            
             let result = '';
             for (let i = 0; i < t2.length; i++) {
-                const kb = key3.charCodeAt(i % key3.length);
-                result += String.fromCharCode((t2[i] + kb) % 256);
+                result += String.fromCharCode((t2[i] + key3.charCodeAt(i % key3.length)) % 256);
             }
-            
             return result;
         }
         
         function genKey(len) {
-            let result = '';
-            for (let i = 0; i < len; i++) {
-                result += String.fromCharCode(Math.floor(Math.random() * 255) + 1);
-            }
-            return result;
+            let r = '';
+            for (let i = 0; i < len; i++) r += String.fromCharCode(Math.floor(Math.random() * 255) + 1);
+            return r;
         }
         
-        function randVar(len = null) {
+        function randVar(len) {
             len = len || Math.floor(Math.random() * 13) + 16;
-            const confuse = ["I", "l", "1", "O", "0", "o", "_", "Il", "lI", "O0", "0O", "l1", "1l", "oO", "Oo"];
-            let result = "_" + confuse[Math.floor(Math.random() * 7)];
-            for (let i = 2; i < len; i++) {
-                result += confuse[Math.floor(Math.random() * confuse.length)];
-            }
-            return result + "_" + Math.floor(Math.random() * 90000 + 10000) + "_" + Math.floor(Math.random() * 900 + 100);
+            const c = ["I", "l", "1", "O", "0", "o", "_", "Il", "lI", "O0", "0O", "l1", "1l", "oO", "Oo"];
+            let r = "_" + c[Math.floor(Math.random() * 7)];
+            for (let i = 2; i < len; i++) r += c[Math.floor(Math.random() * c.length)];
+            return r + "_" + Math.floor(Math.random() * 90000 + 10000);
         }
         
-        function obfNumber(n) {
-            const depth = Math.floor(Math.random() * 4) + 4;
-            
-            function gen(val, d) {
-                if (d <= 0) return val.toString();
-                const a = Math.floor(Math.random() * 99899) + 100;
-                const b = Math.floor(Math.random() * 49) + 2;
-                const x = Math.floor(Math.random() * 1000) + 1;
-                const y = Math.floor(Math.random() * 100) + 1;
-                
+        function obfNum(n) {
+            const d = Math.floor(Math.random() * 4) + 4;
+            function g(v, depth) {
+                if (depth <= 0) return v.toString();
+                const a = Math.floor(Math.random() * 9999) + 100;
+                const b = Math.floor(Math.random() * 20) + 2;
                 const ops = [
-                    () => `((${gen(val + a, d-1)})-${a})`,
-                    () => `((${gen(val - a, d-1)})+${a})`,
-                    () => `(((${gen(val, d-1)})*${b})/${b})`,
-                    () => `((${gen(val, d-1)})+${x}-${x})`,
-                    () => `((${gen(val, d-1)})*1)`,
-                    () => `((${gen(val, d-1)})+${x}+${y}-${x}-${y})`,
+                    () => `((${g(v + a, depth-1)})-${a})`,
+                    () => `((${g(v - a, depth-1)})+${a})`,
+                    () => `(((${g(v, depth-1)})*${b})/${b})`,
+                    () => `((${g(v, depth-1)})*1)`,
                 ];
-                
                 return ops[Math.floor(Math.random() * ops.length)]();
             }
-            
-            return gen(n, depth);
+            return g(n, d);
         }
         
         function junk() {
-            const vars = [];
-            for (let i = 0; i < Math.floor(Math.random() * 4) + 3; i++) {
-                vars.push(randVar(8));
-            }
-            
-            const templates = [
-                `local ${vars[0]}=nil;`,
-                `local ${vars[0]}=${obfNumber(Math.floor(Math.random() * 99899) + 100)};`,
-                `if(function()return false end)()then local ${vars[0]}=nil end;`,
-                `do local ${vars[0]}=${obfNumber(0)};${vars[0]}=nil end;`,
-                '',
+            const v = randVar(8);
+            const t = [
+                `local ${v}=nil;`,
+                `local ${v}=${obfNum(Math.floor(Math.random() * 9999))};`,
+                `if(function()return false end)()then local ${v}=nil end;`,
+                ''
             ];
-            
-            let result = '';
-            for (let i = 0; i < Math.floor(Math.random() * 3) + 2; i++) {
-                result += templates[Math.floor(Math.random() * templates.length)];
+            let r = '';
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
+                r += t[Math.floor(Math.random() * t.length)];
             }
-            return result;
+            return r;
         }
         
         function fakeLogic() {
             const funcs = [];
-            for (let i = 0; i < Math.floor(Math.random() * 3) + 4; i++) {
-                const name = randVar(12);
-                const p1 = randVar(5);
-                const p2 = randVar(5);
-                const inner = randVar(6);
-                
-                const patterns = [
-                    `local ${name}=function(${p1},${p2})local ${inner}=${obfNumber(Math.floor(Math.random() * 1000) + 1)};if ${p1} then return ${p2} else return ${inner} end end;`,
-                    `local ${name};${name}=function(${p1})if ${p1} then return ${name}(${p1}-${obfNumber(1)})else return ${obfNumber(0)} end end;`,
-                ];
-                
-                funcs.push(patterns[Math.floor(Math.random() * patterns.length)]);
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 2; i++) {
+                const n = randVar(10), p = randVar(5), inner = randVar(6);
+                funcs.push(`local ${n}=function(${p})local ${inner}=${obfNum(Math.floor(Math.random() * 999))};if ${p} then return ${inner} else return ${p} end end;`);
             }
             return funcs.join('\n');
         }
         
         function fakeData() {
-            const fakeStrings = [];
-            for (let i = 0; i < Math.floor(Math.random() * 6) + 5; i++) {
-                const len = Math.floor(Math.random() * 31) + 20;
+            const t = randVar(8);
+            let r = `local ${t}={`;
+            for (let i = 0; i < Math.floor(Math.random() * 3) + 2; i++) {
                 let s = '';
-                for (let j = 0; j < len; j++) {
+                for (let j = 0; j < Math.floor(Math.random() * 20) + 10; j++) {
                     s += String.fromCharCode(Math.floor(Math.random() * 58) + 65);
                 }
-                fakeStrings.push(base64Encode(s));
+                r += `[${obfNum(i + 1)}]="${base64Encode(s)}",`;
             }
-            
-            const fakeTable = randVar(10);
-            let result = `local ${fakeTable}={`;
-            for (let i = 0; i < Math.floor(Math.random() * 4) + 3; i++) {
-                const str = fakeStrings[Math.floor(Math.random() * fakeStrings.length)];
-                result += `[${obfNumber(i + 1)}]="${str}",`;
-            }
-            result += '};';
-            return result;
+            return r + '};';
         }
         
-        function shuffleChunks(chunks) {
-            const n = chunks.length;
-            const order = [];
+        function shuffle(chunks) {
+            const n = chunks.length, order = [];
             for (let i = 0; i < n; i++) order.push(i);
-            
             for (let i = n - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [order[i], order[j]] = [order[j], order[i]];
             }
-            
-            const shuffled = [];
-            const reverse = [];
-            for (let newPos = 0; newPos < n; newPos++) {
-                const origPos = order[newPos];
-                shuffled[newPos] = chunks[origPos];
-                reverse[origPos] = newPos + 1;
+            const shuffled = [], reverse = [];
+            for (let i = 0; i < n; i++) {
+                shuffled[i] = chunks[order[i]];
+                reverse[order[i]] = i + 1;
             }
-            
             return { shuffled, reverse };
         }
         
-        function splitMicro(str) {
+        function split(str) {
             const chunks = [];
             let pos = 0;
             while (pos < str.length) {
-                const size = Math.floor(Math.random() * 18) + 8;
+                const size = Math.floor(Math.random() * 15) + 8;
                 chunks.push(str.substr(pos, size));
                 pos += size;
             }
             return chunks;
         }
         
-        let totalChunks = 0;
-        
-        function obfuscateCode(code) {
-            const xorKey1 = genKey(Math.floor(Math.random() * 17) + 24);
-            const xorKey2 = genKey(Math.floor(Math.random() * 13) + 20);
-            const xorKey3 = genKey(Math.floor(Math.random() * 13) + 16);
-            
-            const encrypted = tripleXor(code, xorKey1, xorKey2, xorKey3);
-            const encoded = base64Encode(encrypted);
-            const chunks = splitMicro(encoded);
-            const { shuffled, reverse } = shuffleChunks(chunks);
-            
-            totalChunks += chunks.length;
+        function obfuscateOnce(code) {
+            const k1 = genKey(Math.floor(Math.random() * 10) + 20);
+            const k2 = genKey(Math.floor(Math.random() * 8) + 16);
+            const k3 = genKey(Math.floor(Math.random() * 8) + 12);
+            const enc = tripleXor(code, k1, k2, k3);
+            const b64enc = base64Encode(enc);
+            const chunks = split(b64enc);
+            const { shuffled, reverse } = shuffle(chunks);
             
             const V = [];
-            for (let i = 0; i < 80; i++) V.push(randVar());
+            for (let i = 0; i < 50; i++) V.push(randVar());
             
             let chunkArr = '{';
-            shuffled.forEach((chunk, i) => {
-                chunkArr += `[${obfNumber(i + 1)}]="${chunk}"`;
-                if (i < shuffled.length - 1) chunkArr += ',';
+            shuffled.forEach((c, i) => {
+                chunkArr += `[${obfNum(i + 1)}]="${c}"${i < shuffled.length - 1 ? ',' : ''}`;
             });
             chunkArr += '}';
             
             let orderArr = '{';
-            reverse.forEach((val, i) => {
-                orderArr += `[${obfNumber(i + 1)}]=${obfNumber(val)}`;
-                if (i < reverse.length - 1) orderArr += ',';
+            reverse.forEach((v, i) => {
+                orderArr += `[${obfNum(i + 1)}]=${obfNum(v)}${i < reverse.length - 1 ? ',' : ''}`;
             });
             orderArr += '}';
             
-            function keyToArr(key) {
-                let arr = '{';
-                for (let i = 0; i < key.length; i++) {
-                    arr += obfNumber(key.charCodeAt(i));
-                    if (i < key.length - 1) arr += ',';
-                }
-                return arr + '}';
-            }
+            const keyArr = (k) => '{' + [...k].map((c, i) => obfNum(c.charCodeAt(0)) + (i < k.length - 1 ? ',' : '')).join('') + '}';
             
-            const keyArr1 = keyToArr(xorKey1);
-            const keyArr2 = keyToArr(xorKey2);
-            const keyArr3 = keyToArr(xorKey3);
-            
-            let b64Table = '{';
-            for (let i = 0; i < 64; i++) {
-                b64Table += `["${b64[i]}"]=${obfNumber(i)}`;
-                if (i < 63) b64Table += ',';
-            }
-            b64Table += '}';
-            
-            const s1 = 11, s2 = 22, s3 = 33, s4 = 44, s5 = 55;
-            
+            let b64t = '{';
+            for (let i = 0; i < 64; i++) b64t += `["${b64[i]}"]=${obfNum(i)}${i < 63 ? ',' : ''}`;
+            b64t += '}';
+
             return `return(function(...)
 ${fakeLogic()}
 ${fakeData()}
 ${junk()}
 local ${V[0]}=${chunkArr}
 local ${V[1]}=${orderArr}
-local ${V[2]}=${keyArr1}
-local ${V[3]}=${keyArr2}
-local ${V[4]}=${keyArr3}
-local ${V[5]}=${b64Table}
+local ${V[2]}=${keyArr(k1)}
+local ${V[3]}=${keyArr(k2)}
+local ${V[4]}=${keyArr(k3)}
+local ${V[5]}=${b64t}
+local ${V[6]}=function()local ${V[10]}="" local ${V[11]}=1 while ${V[11]}<=#${V[1]} do local ${V[12]}=${V[1]}[${V[11]}] if ${V[12]} then ${V[10]}=${V[10]}..${V[0]}[${V[12]}]end ${V[11]}=${V[11]}+1 end return ${V[10]} end
+local ${V[7]}=function(${V[13]})local ${V[14]}="" local ${V[15]}=0 local ${V[16]}=0 local ${V[17]}=1 while ${V[17]}<=#${V[13]} do local ${V[18]}=string.sub(${V[13]},${V[17]},${V[17]})if ${V[18]}=="="then if ${V[16]}==2 then ${V[14]}=${V[14]}..string.char(math.floor(${V[15]}/16))elseif ${V[16]}==3 then ${V[14]}=${V[14]}..string.char(math.floor(${V[15]}/1024),math.floor((${V[15]}%1024)/4))end break end local ${V[19]}=${V[5]}[${V[18]}]if ${V[19]} then ${V[15]}=${V[15]}*64+${V[19]} ${V[16]}=${V[16]}+1 if ${V[16]}==4 then ${V[14]}=${V[14]}..string.char(math.floor(${V[15]}/65536),math.floor(${V[15]}/256)%256,${V[15]}%256)${V[15]}=0 ${V[16]}=0 end end ${V[17]}=${V[17]}+1 end return ${V[14]} end
+local ${V[8]}=function(${V[20]},${V[21]})local ${V[22]}="" local ${V[23]}=#${V[21]} local ${V[24]}=1 while ${V[24]}<=#${V[20]} do local ${V[25]}=string.byte(${V[20]},${V[24]})local ${V[26]}=${V[21]}[((${V[24]}-1)%${V[23]})+1]${V[22]}=${V[22]}..string.char((256+${V[25]}-${V[26]})%256)${V[24]}=${V[24]}+1 end return ${V[22]} end
+local ${V[9]}=${V[8]}(${V[8]}(${V[8]}(${V[7]}(${V[6]}()),${V[2]}),${V[3]}),${V[4]})
 ${junk()}
-local ${V[9]}
-local ${V[10]}
-local ${V[11]}
-local ${V[12]}
-local ${V[13]}
-local ${V[69]}=${obfNumber(s1)}
-while true do
-if ${V[69]}==${obfNumber(s1)} then
-${V[9]}=function()
-local ${V[14]}=""
-local ${V[15]}=1
-local ${V[16]}=#${V[1]}
-while ${V[15]}<=${V[16]} do
-local ${V[17]}=${V[1]}[${V[15]}]
-if ${V[17]} then ${V[14]}=${V[14]}..${V[0]}[${V[17]}] end
-${V[15]}=${V[15]}+1
-end
-return ${V[14]}
-end
-${V[69]}=${obfNumber(s2)}
-elseif ${V[69]}==${obfNumber(s2)} then
-${V[10]}=function(${V[18]})
-local ${V[19]}=""
-local ${V[20]}=0
-local ${V[21]}=0
-local ${V[22]}=1
-local ${V[23]}=#${V[18]}
-while ${V[22]}<=${V[23]} do
-local ${V[24]}=string.sub(${V[18]},${V[22]},${V[22]})
-if ${V[24]}=="=" then
-if ${V[21]}==2 then ${V[19]}=${V[19]}..string.char(math.floor(${V[20]}/16))
-elseif ${V[21]}==3 then ${V[19]}=${V[19]}..string.char(math.floor(${V[20]}/1024),math.floor((${V[20]}%1024)/4))
-end
-break
-end
-local ${V[25]}=${V[5]}[${V[24]}]
-if ${V[25]} then
-${V[20]}=${V[20]}*64+${V[25]}
-${V[21]}=${V[21]}+1
-if ${V[21]}==4 then
-${V[19]}=${V[19]}..string.char(math.floor(${V[20]}/65536),math.floor(${V[20]}/256)%256,${V[20]}%256)
-${V[20]}=0
-${V[21]}=0
-end
-end
-${V[22]}=${V[22]}+1
-end
-return ${V[19]}
-end
-${V[69]}=${obfNumber(s3)}
-elseif ${V[69]}==${obfNumber(s3)} then
-${V[11]}=function(${V[26]},${V[27]})
-local ${V[28]}=""
-local ${V[29]}=#${V[27]}
-local ${V[30]}=1
-while ${V[30]}<=#${V[26]} do
-local ${V[31]}=string.byte(${V[26]},${V[30]})
-local ${V[32]}=${V[27]}[((${V[30]}-1)%${V[29]})+1]
-${V[28]}=${V[28]}..string.char((256+${V[31]}-${V[32]})%256)
-${V[30]}=${V[30]}+1
-end
-return ${V[28]}
-end
-${V[69]}=${obfNumber(s4)}
-elseif ${V[69]}==${obfNumber(s4)} then
-${V[12]}=${V[9]}()
-${V[13]}=${V[10]}(${V[12]})
-local ${V[39]}=${V[11]}(${V[13]},${V[2]})
-local ${V[40]}=${V[11]}(${V[39]},${V[3]})
-local ${V[41]}=${V[11]}(${V[40]},${V[4]})
-${V[69]}=${obfNumber(s5)}
-elseif ${V[69]}==${obfNumber(s5)} then
-break
-else
-${V[69]}=${obfNumber(s1)}
-end
-end
-${junk()}
-local ${V[41]}=${V[11]}(${V[11]}(${V[11]}(${V[10]}(${V[9]}()),${V[2]}),${V[3]}),${V[4]})
-return(loadstring or load)(${V[41]})(...)
+return(loadstring or load)(${V[9]})(...)
 end)(...)`;
         }
         
         function runObfuscation(code) {
-            totalChunks = 0;
             let result = code;
-            for (let i = 0; i < 2; i++) {
-                result = obfuscateCode(result);
-            }
-            return { result, chunks: totalChunks };
+            for (let i = 0; i < 2; i++) result = obfuscateOnce(result);
+            return result;
         }
-        
-        // ==================== UI FUNCTIONS ====================
-        
+
+        // UI
         const inputEl = document.getElementById('input');
         const outputEl = document.getElementById('output');
-        const inputInfo = document.getElementById('inputInfo');
-        const outputInfo = document.getElementById('outputInfo');
         const loading = document.getElementById('loading');
         const stats = document.getElementById('stats');
         const toast = document.getElementById('toast');
-        
+
         inputEl.addEventListener('input', () => {
-            inputInfo.textContent = `${inputEl.value.length} chars`;
+            document.getElementById('inputCount').textContent = inputEl.value.length + ' characters';
         });
-        
+
         function obfuscate() {
             const code = inputEl.value.trim();
             if (!code) {
-                showToast('Введите код!');
+                showToast('Please enter some code', true);
                 return;
             }
             
             loading.classList.add('active');
-            stats.style.display = 'none';
-            outputEl.value = '';
+            document.getElementById('obfuscateBtn').disabled = true;
             
             setTimeout(() => {
                 try {
-                    const { result, chunks } = runObfuscation(code);
+                    const result = runObfuscation(code);
                     outputEl.value = result;
-                    outputInfo.textContent = `${result.length} chars`;
+                    document.getElementById('outputCount').textContent = result.length + ' characters';
                     
                     document.getElementById('statOriginal').textContent = formatSize(code.length);
-                    document.getElementById('statObfuscated').textContent = formatSize(result.length);
+                    document.getElementById('statOutput').textContent = formatSize(result.length);
                     document.getElementById('statRatio').textContent = (result.length / code.length).toFixed(1) + 'x';
-                    document.getElementById('statChunks').textContent = chunks;
+                    stats.style.display = 'grid';
                     
-                    stats.style.display = 'flex';
-                    showToast('Готово!');
+                    showToast('Obfuscation complete!');
                 } catch (e) {
-                    outputEl.value = 'Error: ' + e.message;
-                    showToast('Ошибка!');
+                    showToast('Error: ' + e.message, true);
                 }
                 loading.classList.remove('active');
-            }, 100);
+                document.getElementById('obfuscateBtn').disabled = false;
+            }, 50);
         }
-        
+
         function copyOutput() {
             if (!outputEl.value) {
-                showToast('Нечего копировать!');
+                showToast('Nothing to copy', true);
                 return;
             }
             navigator.clipboard.writeText(outputEl.value);
-            showToast('Скопировано!');
+            showToast('Copied to clipboard!');
         }
-        
+
         function clearAll() {
             inputEl.value = '';
             outputEl.value = '';
-            inputInfo.textContent = '0 chars';
-            outputInfo.textContent = '0 chars';
+            document.getElementById('inputCount').textContent = '0 characters';
+            document.getElementById('outputCount').textContent = '0 characters';
             stats.style.display = 'none';
         }
-        
-        function loadExample() {
-            inputEl.value = `-- Example Lua Script
-local function greet(name)
-    print("Hello, " .. name .. "!")
-end
 
-local function calculate(a, b)
-    return a * b + 42
-end
-
-greet("World")
-local result = calculate(10, 5)
-print("Result:", result)`;
-            inputInfo.textContent = `${inputEl.value.length} chars`;
-        }
-        
         function formatSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
             return (bytes / 1024).toFixed(1) + ' KB';
         }
-        
-        function showToast(message) {
-            toast.textContent = message;
+
+        function showToast(msg, isError = false) {
+            toast.textContent = msg;
+            toast.className = 'toast' + (isError ? ' error' : '');
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
     </script>
 </body>
